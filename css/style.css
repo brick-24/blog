@@ -77,3 +77,11 @@ blockquote {
   line-height: 1.6;
   color: #e6e6e6;
 }
+
+/* images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: auto;
+}
