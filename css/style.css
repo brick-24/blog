@@ -85,3 +85,29 @@ img {
   display: block;
   margin: auto;
 }
+
+.table {
+  border: 1px transparent;
+  border-color: #fff;
+}
+
+.table table {
+  width: 100%;
+  table-layout: auto;
+  border-spacing: 5px;
+}
+/* header */
+.table th {
+  border-bottom: 1px solid;
+  border-color: #fff;
+  width: auto;
+  word-wrap: break-word;
+}
+
+.table td {
+  border: 0px solid;
+  border-color: #fff;
+  text-align: center;
+  vertical-align: auto;
+  word-wrap: break-word;
+}

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Docker for the Impatient, Explained Inadequately</title>
+    <title>CURL simplified</title>
     <link rel="stylesheet" href="../css/style.css" />
   </head>
   <body>
@@ -17,7 +17,146 @@
 
       <p class="date">Posted on TBD Date</p>
 
-      <p>Refrences:</p>
+      <p>
+        CURL stands for Client URL Request Library, it allows us to send and
+        receive data from the command line. It can be used for transferring data
+        between servers and has support for many protocols such as: HTTP, HTTPS,
+        FTP, etc.
+      </p>
+
+      <p>The basic structure of a CURL command is: curl [options] [URL]</p>
+
+      <p>Example:</p>
+
+      <div class="code-block">
+        <pre><code>curl https://example.com/ </code></pre>
+
+        <pre><code>curl -X POST https://example.com/api/resource/ </code></pre>
+      </div>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Commonly Used Flags
+      </h1>
+
+      <div class="table">
+        <table>
+          <tr>
+            <th>Flag</th>
+            <th>Desc.</th>
+            <th>Syntax</th>
+          </tr>
+
+          <tr>
+            <td>-O</td>
+            <td>Download the file and save it under its original name</td>
+            <td>
+              <pre><code>curl -O [URL]</code></pre>
+            </td>
+          </tr>
+
+          <tr>
+            <td>-o</td>
+            <td>Download the file and save it with a different name</td>
+            <td>
+              <pre><code>curl -o [filename] [URL]</code></pre>
+            </td>
+          </tr>
+
+          <tr>
+            <td>-X</td>
+            <td>Allows us to specify HTTP method</td>
+            <td>
+              <pre><code>curl -X PUT/GET/etc. [URL]</code></pre>
+            </td>
+          </tr>
+
+          <tr>
+            <td>-I</td>
+            <td>Only fetch headers</td>
+            <td>
+              <pre><code>curl -I [URL]</code></pre>
+            </td>
+          </tr>
+
+          <tr>
+            <td>-d</td>
+            <td>Implies POST, used to send data</td>
+            <td>
+              <pre><code>curl -d "name=JoeMama" [URL]</code></pre>
+            </td>
+          </tr>
+
+          <tr>
+            <td>-L</td>
+            <td>Follow redirect</td>
+            <td>
+              <pre><code>curl -L [URL]</code></pre>
+            </td>
+          </tr>
+
+          <tr>
+            <td>--limit-rate [speed]</td>
+            <td>Allows us to throttle download speed</td>
+            <td>
+              <pre><code>curl --limit-rate 100k -O [URL]</code></pre>
+            </td>
+          </tr>
+
+          <tr>
+            <td>-c</td>
+            <td>Download the cookies to a file</td>
+            <td>
+              <pre><code>curl -c cookies.txt [URL]</code></pre>
+            </td>
+          </tr>
+
+          <tr>
+            <td>-i</td>
+            <td>Include response headers in output</td>
+            <td>
+              <pre><code>curl -i [URL]</code></pre>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Common Use Cases
+      </h1>
+
+      <p>POST JSON</p>
+      <div class="code-block">
+        <pre><code>curl -H "Content-Type: application/json" -d '{"id":1001}' [URL]</code></pre>
+      </div>
+      <p>Custom methods</p>
+      <div class="code-block">
+        <pre><code>curl -X PUT URL
+curl -X PATCH URL
+curl -X DELETE URL
+</code></pre>
+      </div>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Basic Authentication
+      </h1>
+      <p>Inline passing username and password:</p>
+
+      <div class="code-block">
+        <pre><code>curl -u user:pass [URL]</code></pre>
+      </div>
+
+      <p>Prompt for password in terminal (safer):</p>
+
+      <div class="code-block">
+        <pre><code>curl -u user [URL]</code></pre>
+      </div>
+
+      <p>Pass API key in query string</p>
+      <div class="code-block">
+        <pre><code>curl "https://api.example.com/me?api_key=$API_KEY"</code></pre>
+      </div>
+
+      <h1 style="font-size: large"><span class="hash">##</span> References:</h1>
 
       <ul>
         <li>
