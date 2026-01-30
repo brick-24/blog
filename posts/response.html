@@ -1,0 +1,121 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Response Codes</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1 id="back">
+        <a href="/index.html" style="text-decoration: none; color: #fff"
+          ><- back</a
+        >
+      </h1>
+      <h1><span class="hash">#</span> Response Codes Basics</h1>
+      <p class="date">Posted on Jan 31, 2026</p>
+
+      <p>Five families of responses exist, namely:</p>
+      <ul>
+        <li>
+          1xx - these are called Informational Responses, they are normally
+          hidden by the browser but they are important for websockets and
+          streaming.
+        </li>
+
+        <li>2xx - these are the successful responses.</li>
+
+        <li>3xx - these are called redirection messages</li>
+
+        <li>
+          4xx - these are called client error responses, usually the client's
+          fault
+        </li>
+
+        <li>5xx - these are called server error responses</li>
+
+        <li>
+          You may get other codeds that are non-standard or custom to the
+          server's software
+        </li>
+      </ul>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> 1xx - Informational Responses
+      </h1>
+
+      <ul>
+        <li>100 Continue</li>
+
+        <p>
+          This is the interim response which indicate that the client should
+          continue the request or ignore the response if the request is finished
+        </p>
+
+        <li>101 Switching Protocols</li>
+
+        <p>
+          This is the codee that is sent when an Upgrade request header from
+          client indicates a switch in the protocol
+        </p>
+
+        <li>102 Processing</li>
+        <p>
+          This code indicates that the server is working on the request and does
+          not have a response yet, but the client should not timeout or retry
+        </p>
+
+        <li>103 Early Hints</li>
+        <p>
+          Tries to tell the client "The final response is coming, but start
+          preloading to save time"
+        </p>
+      </ul>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> 2xx - Successful Responses
+      </h1>
+
+      <ul>
+        <li>200 OK</li>
+        <p>
+          The request succeeded. The result and meaning of "success" depends on
+          the HTTP method
+        </p>
+
+        <li>201 Created</li>
+        <p>
+          A new resource was created as a result, typically a response to POST
+          or PUT requests
+        </p>
+
+        <li>202 Accepted</li>
+        <p>The request has been received but not yet acted upon</p>
+
+        <li>203 Non-Authoritative Info</li>
+        <p>
+          Response data is valid but it didn't come directly from the original
+          server
+        </p>
+
+        <li>204 No Content</li>
+        <p>
+          The request succeeded, but there's nothing to send back beyond the
+          headers
+        </p>
+
+        <li>205 Reset</li>
+        <p>It tells the client to clear or reset the current view</p>
+
+        <li>206 Partial Content</li>
+        <p>The server is returning only a specific portion of the resource</p>
+      </ul>
+
+      <blockquote>
+        While I intended to avoid this blog becoming a dry reference table for
+        obscure topics, the last blog and this one are quite literally just
+        tables of information broken down into smaller sections of tables of
+        information
+      </blockquote>
+    </main>
+  </body>
+</html>
