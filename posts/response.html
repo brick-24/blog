@@ -110,6 +110,165 @@
         <p>The server is returning only a specific portion of the resource</p>
       </ul>
 
+      <h1 style="font-size: large">
+        <span class="hash">##</span> 3xx - Redirection Responses
+      </h1>
+
+      <ul>
+        <li>300 Multiple Choices</li>
+        <p>
+          there are several possible resources the client could use, and it must
+          choose one
+        </p>
+
+        <li>301 Moved Permanently</li>
+        <p>
+          the requested resource has a new permanent URL and future requests
+          should use it
+        </p>
+
+        <li>302 Found</li>
+        <p>
+          the requested resource is temporarily available at a different URL
+        </p>
+
+        <li>303 See Other</li>
+        <p>
+          the client should retrieve the result from another URL using a GET
+          request
+        </p>
+
+        <li>304 Not Modified</li>
+        <p>
+          the cached version of the resource is still valid and no new content
+          is sent
+        </p>
+
+        <li>305 Use Proxy</li>
+        <p>
+          the request must be made through a specific proxy, which is now
+          largely obsolete
+        </p>
+
+        <li>307 Temporary Redirect</li>
+        <p>
+          the resource has temporarily moved and the original request method
+          must be preserved
+        </p>
+
+        <li>308 Permanent Redirect</li>
+        <p>
+          the resource has permanently moved and the original request method
+          must be preserved
+        </p>
+      </ul>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> 4xx - Client Error Messages
+      </h1>
+
+      <ul>
+        <li>400 Bad Request</li>
+        <p>
+          the server cannot understand the request because it is malformed or
+          invalid
+        </p>
+
+        <li>401 Unauthorized</li>
+        <p>
+          the request requires authentication and the client has not provided
+          valid credentials
+        </p>
+
+        <li>403 Forbidden</li>
+        <p>
+          the server understands who the client is but refuses to allow access
+        </p>
+
+        <li>404 Not Found</li>
+        <p>the server cannot find the requested resource</p>
+
+        <li>405 Method Not Allowed</li>
+        <p>the request method is valid but not allowed for this resource</p>
+
+        <li>409 Conflict</li>
+        <p>the request conflicts with the current state of the resource</p>
+
+        <li>410 Gone</li>
+        <p>the resource once existed but has been permanently removed</p>
+
+        <li>413 Content Too Large</li>
+        <p>
+          the request body is larger than what the server is willing to process
+        </p>
+
+        <li>415 Unsupported Media Type</li>
+        <p>
+          the server does not support the format of the data sent in the request
+        </p>
+
+        <li>418 I'm a teapot</li>
+        <p>the server refuses to perform the request as a joke response</p>
+
+        <li>422 Unprocessable Content</li>
+        <p>the request is syntactically valid but semantically incorrect</p>
+
+        <li>426 Upgrade Required</li>
+        <p>the server requires the client to switch to a different protocol</p>
+
+        <li>429 Too Many Requests</li>
+        <p>the client has sent too many requests in a short period of time</p>
+
+        <li>451 Unavailable For Legal Reasons</li>
+        <p>the resource cannot be served due to legal restrictions</p>
+      </ul>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> 5xx - Server Error Messages
+      </h1>
+
+      <ul>
+        <li>500 Internal Server Error</li>
+        <p>
+          the server failed in an unexpected way and does not know how to handle
+          the request
+        </p>
+
+        <li>501 Not Implemented</li>
+        <p>
+          the server does not support the request method and cannot fulfill it
+        </p>
+
+        <li>502 Bad Gateway</li>
+        <p>the server received an invalid response from an upstream server</p>
+
+        <li>503 Service Unavailable</li>
+        <p>
+          the server is temporarily unable to handle the request due to overload
+          or maintenance
+        </p>
+
+        <li>504 Gateway Timeout</li>
+        <p>
+          the server did not receive a response in time from an upstream server
+        </p>
+
+        <li>507 Insufficient Storage</li>
+        <p>
+          the server cannot complete the request because it has run out of
+          storage
+        </p>
+
+        <li>508 Loop Detected</li>
+        <p>the server detected an infinite loop while processing the request</p>
+
+        <li>511 Network Authentication Required</li>
+        <p>
+          the client must authenticate to gain access to the network before the
+          request can succeed
+        </p>
+      </ul>
+
       <blockquote>
         While I intended to avoid this blog becoming a dry reference table for
         obscure topics, the last blog and this one are quite literally just
