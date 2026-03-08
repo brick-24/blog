@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Building a URL Shortener with FastAPI</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1 id="back">
+        <a href="/index.html" style="text-decoration: none; color: #fff"
+          ><- back</a
+        >
+      </h1>
+
+      <h1><span class="hash">#</span> Building a URL Shortener with FastAPI</h1>
+
+      <p class="date">Posted on Mar 8, 2026</p>
+      <p>
+        In this project I built a simple URL shortener using FastAPI,
+        PostgreSQL, and GitHub OAuth. The service runs on Google Cloud Run and
+        stores its data in Cloud SQL.
+      </p>
+
+      <p>
+        The system supports link creation, redirect tracking, and analytics for
+        each shortened link.
+      </p>
+
+      <div class="image">
+        <img
+          src="../images/url-short.png"
+          alt="URL shortener screenshot"
+          style="width: 100%; border-radius: 6px"
+        />
+      </div>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Please give the Repo a Star
+      </h1>
+      <div class="code-block">
+        <pre><code>https://github.com/brick-24/url-shorten</code></pre>
+      </div>
+
+      <p>
+        The repository contains the full source code, deployment configuration,
+        and documentation for the URL shortener.
+      </p>
+
+      <p>
+        You can also explore the README for setup instructions and architecture
+        details.
+      </p>
+
+      <div class="code-block">
+        <pre><code>git clone https://github.com/brick-24/url-shorten.git</code></pre>
+      </div>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> How URL Shortening Works
+      </h1>
+
+      <p>
+        The core idea is straightforward. A long URL is stored in a database and
+        assigned a short code.
+      </p>
+
+      <p>
+        When someone visits the short code, the server looks up the original URL
+        and redirects the user.
+      </p>
+
+      <div class="code-block">
+        <pre><code>https://example.com/some/very/long/url</code></pre>
+        <pre><code>→ https://short.raghavsethi.in/abc12</code></pre>
+      </div>
+
+      <p>The short code acts as a unique identifier in the database.</p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Short Code Generation
+      </h1>
+
+      <p>
+        Short codes are generated randomly using letters and numbers. A typical
+        code might look like:
+      </p>
+
+      <div class="code-block">
+        <pre><code>abc12</code></pre>
+      </div>
+
+      <p>
+        These are stored alongside the original URL and used later for
+        redirection.
+      </p>
+
+      <div class="code-block">
+        <pre><code>key = "".join(random.choices(string.ascii_letters + string.digits, k=5))</code></pre>
+      </div>
+
+      <p>
+        This keeps the links short while still giving millions of possible
+        combinations.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Redirect Flow
+      </h1>
+
+      <p>When someone visits a short link, the server performs three steps:</p>
+
+      <div class="code-block">
+        <pre><code>1. Look up the short code in the database
+2. Log the click metadata
+3. Redirect to the original URL</code></pre>
+      </div>
+
+      <p>
+        Redirects are handled with HTTP status code <code>307</code>, which
+        preserves the original request method.
+      </p>
+
+      <div class="code-block">
+        <pre><code>return RedirectResponse(url=record.original_url, status_code=307)</code></pre>
+      </div>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Click Tracking
+      </h1>
+
+      <p>
+        Every redirect is logged for analytics. This includes information about
+        the visitor and their environment.
+      </p>
+
+      <div class="table">
+        <table>
+          <tr>
+            <th>Field</th>
+            <th>Description</th>
+          </tr>
+
+          <tr>
+            <td>IP Address</td>
+            <td>Visitor IP extracted from request headers</td>
+          </tr>
+
+          <tr>
+            <td>User Agent</td>
+            <td>Browser or client making the request</td>
+          </tr>
+
+          <tr>
+            <td>Referer</td>
+            <td>The page the visitor came from</td>
+          </tr>
+
+          <tr>
+            <td>Timestamp</td>
+            <td>Time of the redirect</td>
+          </tr>
+        </table>
+      </div>
+
+      <p>
+        These logs make it possible to build simple analytics such as total
+        clicks and unique visitors.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Authentication with GitHub
+      </h1>
+
+      <p>
+        Instead of building a login system from scratch, the service uses GitHub
+        OAuth.
+      </p>
+
+      <p>
+        When users log in, their GitHub ID and username are stored in the
+        session. This allows the application to associate links with specific
+        users.
+      </p>
+
+      <div class="code-block">
+        <pre><code>request.session["user"] = {
+  "id": profile["id"],
+  "login": profile["login"]
+}</code></pre>
+      </div>
+
+      <p>
+        This keeps the authentication layer simple while still providing
+        identity and ownership for links.
+      </p>
+
+      <h1 style="font-size: large"><span class="hash">##</span> Deployment</h1>
+
+      <p>
+        The application is deployed on Google Cloud Run, which runs
+        containerised services and scales automatically.
+      </p>
+
+      <p>
+        PostgreSQL is hosted using Google Cloud SQL. In production the app
+        connects to the database using the Cloud SQL Unix socket.
+      </p>
+
+      <div class="code-block">
+        <pre><code>/cloudsql/INSTANCE_CONNECTION_NAME</code></pre>
+      </div>
+
+      <p>
+        This setup allows the service to remain stateless while the database
+        handles persistent storage.
+      </p>
+      <h1 style="font-size: large"><span class="hash">##</span> References:</h1>
+      <ul>
+        <li>
+          <a
+            href="https://fastapi.tiangolo.com/"
+            style="text-decoration: none; color: #fff"
+            >fastapi.tiangolo.com</a
+          >
+        </li>
+
+        <li>
+          <a
+            href="https://cloud.google.com/run"
+            style="text-decoration: none; color: #fff"
+            >cloud.google.com/run</a
+          >
+        </li>
+
+        <li>
+          <a
+            href="https://www.postgresql.org/"
+            style="text-decoration: none; color: #fff"
+            >postgresql.org</a
+          >
+        </li>
+      </ul>
+    </main>
+  </body>
+</html>
