@@ -111,3 +111,21 @@ img {
   vertical-align: auto;
   word-wrap: break-word;
 }
+
+.nav {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.nav a {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: #ffd84d;
+  font-size: 1rem;
+}
+
+.nav a:hover {
+  opacity: 0.85;
+}
