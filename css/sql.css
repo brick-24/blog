@@ -1,0 +1,34 @@
+.resources {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.resource-card {
+  display: flex;
+  gap: 1rem;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.15s ease;
+}
+.resource-card:hover {
+  transform: translateY(-2px);
+}
+.resource-card img {
+  width: 220px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.resource-content {
+  padding: 1rem;
+}
+.resource-content h3 {
+  margin: 0 0 0.5rem;
+}
+.resource-content p {
+  margin: 0;
+  opacity: 0.8;
+}

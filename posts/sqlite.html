@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SQLite, Just a File?</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/sql.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1 id="back">
+        <a href="/index.html" style="text-decoration: none; color: #fff"
+          ><- back</a
+        >
+      </h1>
+
+      <h1>
+        <span class="hash">#</span> The Most Impressive Database Is Just a File,
+        SQLite
+      </h1>
+      <p class="date">Posted on Jun 15, 2026</p>
+
+      <p>
+        Let's go through a hypothetical scenario, imagine that you are building
+        the next cutting edge trillion dollar vibecoded masterpiece web app for
+        mobile, now lets assume that you collect and store user data locally on
+        the device.
+      </p>
+
+      <p>
+        Now imagine how you can store this data, maybe you could use text files
+        or .csv files, well this is technically okay but this prevents us from
+        being able to query it, expensive deletion and searching.
+      </p>
+
+      <p>
+        If you want to query your data, then you could use SQL servers such as
+        mysql, this is inefficent as you would have to spin up a server and then
+        provide connections on the device, what if you could use SQL without the
+        server, that is SQLite
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> History/Origin
+      </h1>
+      <p>
+        SQLite began in 2000 when Richard Hipp was working on software for the
+        U.S Navy's DDG-79 destroyer program. The application needed as datavase
+        but the options where complex and couldn't fit the environment
+        constraints
+      </p>
+      <p>So Hipp decided to build his own solution</p>
+      <p>The idea was simple, a database that doesn't need a server</p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Where is it used?
+      </h1>
+
+      <p>It's everywhere, you are probably using it right now...</p>
+      <p>
+        Android uses it extensively, many desktop applications use it, apple
+        platforms ship with SQLite. The browser relies on SQLite for local
+        storage and internal data management. Apps such as Notion use WASM
+        implementation of SQLite as a client side DB and caching layer to store
+        and query data directly on the user's device
+      </p>
+
+      <blockquote>
+        The SQLite website describes it as, <br /><br />
+        <em
+          >- the most used database engine in the world. SQLite is built into
+          all mobile phones and most computers and comes bundled inside
+          countless other applications that people use every day.</em
+        >
+      </blockquote>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Three's Company
+      </h1>
+      <p>
+        This massive project that runs on possibly trillions of instances is
+        maintained by just three people.
+      </p>
+
+      <p>
+        All of the SQLite source code is public domain, meaning that the authors
+        have dedicated it to the public rather than using a license such as MIT,
+        Apache or GPL (more on that later). You are allowed to modify,
+        distribute and embed it inot commercial products without any licensing
+        requirements
+      </p>
+
+      <p>
+        The codebase only has three developers due to their extreme emphasis on
+        testing edge cases, narrow scope and design philosphy of "don't break
+        anything"
+      </p>
+      <p>
+        Backward compatability is extremely important and having fewer
+        developers reduces complexity
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Too Much Internal Tooling?
+      </h1>
+
+      <p>
+        Richard Hipp wrote much of his own tooling, the most notable example is
+        Fossil, which is a version control and project management system used to
+        develop SQLite. Fossil includes a built-in wiki, bug tracker, and a web
+        interface.
+      </p>
+      <p>Richard also wrote his own text editor, reportadly called 'E'</p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> ACID Compliant
+      </h1>
+
+      <p>For anyone wondering, yes, SQLite is ACID compliant</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>How SQLite Provides It</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Atomicity</strong></td>
+            <td>
+              A transaction either completes fully or is rolled back completely.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Consistency</strong></td>
+            <td>
+              Constraints, triggers, and transaction rules help keep the
+              database in a valid state.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Isolation</strong></td>
+            <td>
+              Transactions are isolated from each other; readers don't see
+              partially committed changes.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Durability</strong></td>
+            <td>
+              Once a transaction is committed, it survives crashes and power
+              failures (assuming the underlying storage behaves correctly).
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> My Favourite License
+      </h1>
+
+      <p>The license isnt a text of legal slop, its simply:</p>
+
+      <blockquote>
+        <pre>
+    /* ** 2005 February 15 **
+    ** The author disclaims copyright to this source code. In place of
+    ** a legal notice, here is a blessing:
+    **
+    ** May you do good and not evil.
+    ** May you find forgiveness for yourself
+    ** and forgive others.
+    ** May you share freely, never taking more than
+    ** you give.
+    **
+    *************************************************************************
+    ** This file contains C code routines that used to generate VDBE code
+    ** that implements the ALTER TABLE command.
+    */
+    </pre
+        >
+      </blockquote>
+      <h2><span class="hash">##</span> Further Reading</h2>
+      <div class="resources">
+        <a
+          class="resource-card"
+          href="https://sqlite.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="resource-content">
+            <h3>SQLite Official Website</h3>
+            <p>
+              Official documentation, source code, architecture notes, and
+              design papers.
+            </p>
+          </div>
+        </a>
+        <a
+          class="resource-card"
+          href="https://www.youtube.com/watch?v=PGpL5hYpY1o"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://img.youtube.com/vi/PGpL5hYpY1o/maxresdefault.jpg"
+            alt="The Architecture of SQLite"
+          />
+          <div class="resource-content">
+            <h3>SQLite and its weird new fork “libSQL”</h3>
+            <p>
+              How SQLite is structured internally. Why it matters, whats the
+              fork like
+            </p>
+          </div>
+        </a>
+        <a
+          class="resource-card"
+          href="https://www.youtube.com/watch?v=9RArbqGOvsw"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://img.youtube.com/vi/9RArbqGOvsw/maxresdefault.jpg"
+            alt="SQLite Talk"
+          />
+          <div class="resource-content">
+            <h3>SQLite Is ULTIMATE Choice For 99% of Projects</h3>
+            <p>Why SQLite is like a swiss army knife for most projects</p>
+          </div>
+        </a>
+        <a
+          class="resource-card"
+          href="https://www.youtube.com/watch?v=qOW1KvSEfLs"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://img.youtube.com/vi/qOW1KvSEfLs/maxresdefault.jpg"
+            alt="SQLite Internals"
+          />
+          <div class="resource-content">
+            <h3>SQLite is a masterclass in library design</h3>
+            <p>
+              A deep dive into the SQLite source code and how to design
+              libraries
+            </p>
+          </div>
+        </a>
+        <a
+          class="resource-card"
+          href="https://www.youtube.com/watch?v=lSVgeMoXJTs"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://img.youtube.com/vi/lSVgeMoXJTs/maxresdefault.jpg"
+            alt="SQLite Source Code Walkthrough"
+          />
+          <div class="resource-content">
+            <h3>The Code Inside Everything (That Gets Zero Credit)</h3>
+            <p>
+              Covers everything from the origins to how the company was saved by
+              motorola
+            </p>
+          </div>
+        </a>
+      </div>
+    </main>
+  </body>
+</html>
