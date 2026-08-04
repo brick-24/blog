@@ -1,0 +1,358 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Git Commands Other than add, commit, push, etc.</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/sql.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1 id="back">
+        <a href="/index.html" style="text-decoration: none; color: #fff"
+          ><- back</a
+        >
+      </h1>
+
+      <h1><span class="hash">#</span> Git Commands To Get Out of a Pickle</h1>
+
+      <p class="date">Posted on Aug 4, 2026</p>
+
+      <p>
+        Recently I've been reading Beej's Guide to Git, and it's changed the way
+        I think about learning computer science.
+      </p>
+
+      <p>
+        I've always learned best by diving into tutorials, trying things out,
+        breaking things, and figuring out what went wrong from the error
+        messages. Beej's Guide to Git leans into that same philosophy. Instead
+        of treating Git like a list of commands to memorise, it builds an
+        intuition for how everything fits together. The tone is friendly, the
+        examples are practical.
+      </p>
+
+      <div class="resources">
+        <a
+          class="resource-card"
+          href="https://beej.us/guide/bggit/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="resource-content">
+            <h3>Beej's Guide to Git</h3>
+            <p>
+              I highly recommend checking out this book, it is an extremely
+              quick and fun read.
+            </p>
+          </div>
+        </a>
+      </div>
+
+      <p>
+        I've tried to form a collection of Git commands and workflows that have
+        saved me in the past, along with when you would end up using them.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> You committed code but forgot to create a
+        branch
+      </h1>
+
+      <p>
+        You were working on "main", committed your changes, and then realised
+        this should have been its own feature branch.
+      </p>
+
+      <p>
+        Your commit is not tied up to a branch, HEAD just happens to be pointed
+        to by it.
+      </p>
+
+      <div class="code-block">
+        <pre><code># Create a new branch from your current commit
+
+git switch -c feature/my-feature
+
+# Go back to main
+
+git switch main
+
+# Move main back one commit
+
+git reset --hard HEAD~1</code></pre>
+      </div>
+
+      <p>
+        Now your commit only exists on "feature/my-feature", and "main" is back
+        where it was before.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> You pushed directly to "main"
+      </h1>
+
+      <p>Sometimes muscle memory wins.</p>
+
+      <p>Instead of rewriting I prefer to revert the commit.</p>
+
+      <div class="code-block">
+        <pre><code>git revert &lt;commit-hash&gt;
+git push
+
+Then cherry-pick the original commit onto my feature branch.
+
+git switch feature/my-feature
+git cherry-pick &lt;commit-hash&gt;</code></pre>
+      </div>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Understanding "git rebase"
+      </h1>
+
+      <p>The easiest way to think about rebasing is:</p>
+
+      <blockquote>
+        "Replay my commits as if I had started from a newer point."
+      </blockquote>
+
+      <p>Imagine this history:</p>
+
+      <div class="image">
+        <img
+          src="../images/git branch.png"
+          alt="Git Branch Example"
+          style="width: 100%; border-radius: 6px"
+        />
+      </div>
+
+      <p>While you were working, "main" advanced:</p>
+
+      <div class="code-block">
+        <pre><code>git switch feature
+git rebase main</code></pre>
+      </div>
+
+      <p>
+        creates new versions of your commits, The result is a cleaner, linear
+        history that often makes pull requests easier to review.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Fixing the last commit
+      </h1>
+
+      <p>Forgot a file?</p>
+
+      <div class="code-block">
+        <pre><code>git add forgotten-file
+git commit --amend</code></pre>
+      </div>
+
+      <p>Need to change the commit message?</p>
+
+      <div class="code-block">
+        <pre><code>git commit --amend -m "Better commit message"</code></pre>
+      </div>
+
+      <p>
+        As long as you haven't pushed yet, this is usually the cleanest option.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Stashing work
+      </h1>
+
+      <p>Halfway through one task when someone asks you to fix a bug?</p>
+
+      <div class="code-block">
+        <pre><code>git stash
+
+Switch branches.
+
+Fix the bug.
+
+Come back.
+
+git stash pop</code></pre>
+      </div>
+
+      <p>If you have multiple stashes:</p>
+
+      <div class="code-block">
+        <pre><code>git stash list
+git stash apply stash@{1}</code></pre>
+      </div>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Undoing mistakes
+      </h1>
+
+      <div class="code-block">
+        <pre><code>Undo the last commit but keep the changes staged:
+
+git reset --soft HEAD~1
+
+Undo the last commit and unstage the files:
+
+git reset HEAD~1
+
+Throw everything away and return to the last commit:
+
+git reset --hard HEAD</code></pre>
+      </div>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Branching workflow
+      </h1>
+
+      <p>A simple workflow that scales surprisingly well:</p>
+
+      <div class="code-block">
+        <pre><code>main
+├── feature/login
+├── feature/dashboard
+└── bug/navbar</code></pre>
+      </div>
+
+      <ol>
+        <li>Create a branch for every piece of work.</li>
+        <li>Commit often with meaningful messages.</li>
+        <li>Rebase onto the latest "main" before opening a PR.</li>
+        <li>Open a pull request.</li>
+        <li>Merge after review.</li>
+        <li>Delete the branch.</li>
+      </ol>
+
+      <p>Keeping branches focused makes reviews faster and rollbacks easier.</p>
+
+      <p>
+        I am yet to work with the new github stacked prs but I feel that this
+        workflow would still be applicable.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Viewing history
+      </h1>
+
+      <p>A graph makes Git much easier to reason about.</p>
+
+      <div class="code-block">
+        <pre><code>git log --oneline --graph --decorate --all</code></pre>
+      </div>
+
+      <p>You'll get something like:</p>
+
+      <div class="image">
+        <img
+          src="../images/git log.png"
+          alt="Git Branch Example"
+          style="width: 100%; border-radius: 6px"
+        />
+      </div>
+      <p>This quickly shows where branches split and merged.</p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> The commands I use most frequently
+      </h1>
+
+      <div class="code-block">
+        <pre><code>git status
+git diff
+git log --oneline --graph --decorate --all
+git switch
+git switch -c &lt;branch&gt;
+git fetch
+git pull --rebase
+git stash
+git rebase
+git cherry-pick
+git commit --amend</code></pre>
+      </div>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> The biggest takeaway
+      </h1>
+
+      <p>Almost every Git command boils down to moving one of three things:</p>
+
+      <ul>
+        <li>Your working directory (the files on disk)</li>
+        <li>A branch pointer ("main", "feature/login")</li>
+        <li>HEAD (where you currently are)</li>
+      </ul>
+
+      <p>
+        Once you stop thinking of Git as "commands" and start thinking of it as
+        moving pointers around a graph of immutable commits, the commands become
+        much easier to predict instead of memorise.
+      </p>
+
+      <h2><span class="hash">##</span> Further Reading</h2>
+      <div class="resources">
+        <a
+          class="resource-card"
+          href="https://www.youtube.com/watch?v=hwP7WQkmECE"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://img.youtube.com/vi/hwP7WQkmECE/maxresdefault.jpg"
+            alt="Git Tutorial"
+          />
+          <div class="resource-content">
+            <h3>Git Explained in 100 Seconds</h3>
+            <p>
+              Learn the basics of Git in 100 seconds. Learn to initialize a git
+              repo, stage files, commit, branch and merge branches
+            </p>
+          </div>
+        </a>
+
+        <a
+          class="resource-card"
+          href="https://ohshitgit.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="resource-content">
+            <h3>Oh Shit, Git!?!</h3>
+            <p>
+              A practical guide for recovering from common Git mistakes with
+              clear, step-by-step solutions.
+            </p>
+          </div>
+        </a>
+
+        <a
+          class="resource-card"
+          href="https://sethrobertson.github.io/GitFixUm/fixup.html"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="resource-content">
+            <h3>Git Fix Up Guide</h3>
+            <p>
+              A comprehensive troubleshooting reference that helps diagnose and
+              recover from complex Git issues.
+            </p>
+          </div>
+        </a>
+
+        <a
+          class="resource-card"
+          href="https://dangitgit.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="resource-content">
+            <h3>Dangit, Git!?!</h3>
+            <p>
+              A beginner-friendly collection of fixes for everyday Git problems
+              and accidental mishaps.
+            </p>
+          </div>
+        </a>
+      </div>
+    </main>
+  </body>
+</html>
