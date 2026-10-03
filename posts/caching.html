@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Caching: Faster by Remembering</title>
+    <link rel="stylesheet" href="../css/new_style.css" />
+    <link rel="stylesheet" href="../css/caching.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1 id="back">
+        <a href="/index.html" style="text-decoration: none; color: #fff"
+          >&lt;- back</a
+        >
+      </h1>
+
+      <h1><span class="hash">#</span> Caching: Faster by Remembering</h1>
+      <p class="date">Posted on Oct 3, 2026</p>
+
+      <p>
+        A cache is just a store of data that provides a faster read or write
+        time for your data. Instead of asking the database the same question
+        over and over, you keep the recent answer in the cache which is usually
+        much faster.
+      </p>
+
+      <p>
+        Let's imagine that your app has a profile page which displays the users
+        profile information, now querying your database for this data which does
+        not change often is quite expensive. A possible option to solve this
+        problem is to cache this data on the users localstorage with a TTL
+        according to the applications needs.
+      </p>
+
+      <h1 style="font-size: large"><span class="hash">##</span> Try it</h1>
+      <p>
+        For this example, a cache hit equals a 1ms read time and a database read
+        takes 35ms.
+      </p>
+
+      <section class="simulator" aria-label="Cache performance simulator">
+        <h2>1. Why cache size matters</h2>
+        <p class="label">
+          Request a key. The leftmost cache slot is the most recently used and
+          the rightmost one is the least recently used which would get replaced
+          first.
+        </p>
+        <div class="keys" id="keys" aria-label="Keys to request"></div>
+        <p class="label">Cache</p>
+        <div class="slots" id="slots" aria-live="polite"></div>
+        <div class="ends">
+          <span>most recently used</span><span>next to evict</span>
+        </div>
+        <div class="message" id="message" aria-live="polite">
+          Pick a key to begin.
+        </div>
+        <div class="results">
+          <div class="result">
+            <span>Hits</span><strong id="hits">0</strong>
+          </div>
+          <div class="result">
+            <span>Misses</span><strong id="misses">0</strong>
+          </div>
+          <div class="result">
+            <span>Actual hit rate</span><strong id="actual-rate">-</strong>
+          </div>
+          <div class="result">
+            <span>Average time</span><strong id="average-time">-</strong>
+          </div>
+        </div>
+        <div class="control">
+          <label for="cache-size"
+            >Cache size:
+            <span class="value" id="cache-size-value">3 slots</span></label
+          >
+          <input
+            id="cache-size"
+            type="range"
+            min="1"
+            max="6"
+            step="1"
+            value="3"
+          />
+          <button type="button" id="popular">Send 20 popular requests</button>
+          <button type="button" id="reset">Reset</button>
+        </div>
+      </section>
+
+      <p>
+        Note: a repeated key becomes a hit, while a new key is a miss and has to
+        visit the database. A larger cache can keep more useful answers around,
+        which is how it improves the hit rate over time.
+      </p>
+
+      <section class="simulator" aria-label="Cache hit rate simulator">
+        <h2>2. Why hit rate matters</h2>
+        <p class="label">This comparison uses 10,000 read requests.</p>
+        <div class="control">
+          <label for="hit-rate"
+            >Cache hit rate:
+            <span class="value" id="hit-rate-value">80%</span></label
+          >
+          <input
+            id="hit-rate"
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value="80"
+          />
+        </div>
+        <p class="response-time">
+          Average response time: <strong id="response-time">7.8ms</strong>
+          <span class="speedup" id="speedup">(4.5x faster than no cache)</span>
+        </p>
+        <div class="results" aria-live="polite">
+          <div class="result">
+            <span>All reads from the DB</span
+            ><strong id="db-time">350.0ms</strong>
+          </div>
+          <div class="result">
+            <span>With this cache</span><strong id="cache-time">78.0s</strong>
+          </div>
+          <div class="result">
+            <span>Time saved</span><strong id="saved-time">272.0s</strong>
+          </div>
+          <div class="result">
+            <span>Database reads avoided</span
+            ><strong id="avoided-reads">8,000</strong>
+          </div>
+        </div>
+        <p class="label">Where requests go</p>
+        <div class="bar" aria-label="Cache and database request split">
+          <div class="cache-bar" id="bar-hit">cache</div>
+          <div class="db-bar" id="bar-miss">database</div>
+        </div>
+        <p class="label">Average time compared to no cache (35ms)</p>
+        <div
+          class="track"
+          aria-label="Average response time compared to database"
+        >
+          <div id="bar-time"></div>
+        </div>
+        <p class="note">
+          Capacity tells us how many items can be stored at once. The hit rate
+          is the percentage of reads that actually find their answer there. A
+          bigger cache size is usually the solution however maintaing a high hit
+          rate is also very important
+        </p>
+      </section>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Why that matters
+      </h1>
+      <p>
+        At an 80% hit rate, 8,000 of those 10,000 requests skip the database.
+        This results not only in a faster load time but also indicates that the
+        database has to do less work.
+      </p>
+
+      <p>
+        Caches are particullarly useful when changes are rare. Almost every
+        application you interact with daily uses some type of caching. Social
+        media apps use caching for popular posts, streaming services store
+        frequently visited episodes/shows in caches, etc.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> TTL (Time to Live)
+      </h1>
+      <p>
+        When the original data changes, you need to update or remove the old
+        cached answer. A common simple approach is a TTL (time to live): keep an
+        answer for, say, five minutes, then fetch it again.
+      </p>
+      <p></p>
+      <p></p>
+    </main>
+    <script>
+      const cacheSize = document.getElementById("cache-size");
+      const hitRate = document.getElementById("hit-rate");
+      const reads = 10000,
+        dbMs = 35,
+        cacheMs = 1;
+      const keys = ["A", "B", "C", "D", "E", "F", "G", "H"];
+      const weights = [30, 25, 20, 10, 6, 4, 3, 2];
+      let cache = [],
+        capacity = 3,
+        hits = 0,
+        misses = 0,
+        totalMs = 0;
+      let lastKey = null,
+        lastResult = null;
+      const formatSeconds = (ms) => `${(ms / 1000).toFixed(1)}ms`;
+      function request(key) {
+        const index = cache.indexOf(key);
+        lastKey = key;
+        if (index > -1) {
+          cache.splice(index, 1);
+          cache.unshift(key);
+          hits++;
+          totalMs += cacheMs;
+          lastResult = "hit";
+          return `Hit: ${key} was already in the cache, so it took ${cacheMs}ms.`;
+        }
+        misses++;
+        totalMs += dbMs;
+        lastResult = "miss";
+        const evicted = cache.length >= capacity ? cache.pop() : null;
+        cache.unshift(key);
+        return `Miss: ${key} came from the database in ${dbMs}ms.${evicted ? ` ${evicted} was evicted.` : ""}`;
+      }
+      function renderCache(message) {
+        const slots = document.getElementById("slots");
+        slots.innerHTML = "";
+        for (let i = 0; i < capacity; i++) {
+          const key = cache[i],
+            slot = document.createElement("div");
+          slot.className = `slot${key ? "" : " empty"}${key === lastKey ? ` ${lastResult}` : ""}`;
+          slot.textContent = key || "-";
+          slots.appendChild(slot);
+        }
+        const count = hits + misses;
+        document.getElementById("hits").textContent = hits;
+        document.getElementById("misses").textContent = misses;
+        document.getElementById("actual-rate").textContent = count
+          ? `${Math.round((hits / count) * 100)}%`
+          : "-";
+        document.getElementById("average-time").textContent = count
+          ? `${Math.round(totalMs / count)}ms`
+          : "-";
+        if (message) document.getElementById("message").textContent = message;
+      }
+      function updateSimulation() {
+        const hits = Number(hitRate.value) / 100;
+        const allDb = reads * dbMs;
+        const cached = reads * (hits * cacheMs + (1 - hits) * dbMs);
+        const average = cached / reads;
+        document.getElementById("hit-rate-value").textContent =
+          `${hitRate.value}%`;
+        document.getElementById("db-time").textContent = formatSeconds(allDb);
+        document.getElementById("cache-time").textContent =
+          formatSeconds(cached);
+        document.getElementById("saved-time").textContent = formatSeconds(
+          allDb - cached,
+        );
+        document.getElementById("avoided-reads").textContent = Math.round(
+          reads * hits,
+        ).toLocaleString();
+        document.getElementById("bar-hit").style.width = `${hitRate.value}%`;
+        document.getElementById("bar-miss").style.width =
+          `${100 - hitRate.value}%`;
+        document.getElementById("response-time").textContent =
+          `${average.toFixed(1)}ms`;
+        document.getElementById("speedup").textContent =
+          hits === 0
+            ? "(no benefit yet)"
+            : `(${(dbMs / average).toFixed(1)}x faster than no cache)`;
+        document.getElementById("bar-time").style.width =
+          `${Math.max((average / dbMs) * 100, 1)}%`;
+      }
+      keys.forEach((key) => {
+        const button = document.createElement("button");
+        button.textContent = key;
+        button.addEventListener("click", () => renderCache(request(key)));
+        document.getElementById("keys").appendChild(button);
+      });
+      cacheSize.addEventListener("input", () => {
+        capacity = Number(cacheSize.value);
+        cache = cache.slice(0, capacity);
+        document.getElementById("cache-size-value").textContent =
+          `${capacity} slot${capacity === 1 ? "" : "ms"}`;
+        renderCache(
+          `Cache resized to ${capacity} slot${capacity === 1 ? "" : "ms"}.`,
+        );
+      });
+      document.getElementById("popular").addEventListener("click", () => {
+        const total = weights.reduce((sum, weight) => sum + weight, 0);
+        for (let count = 0; count < 20; count++) {
+          let choice = Math.random() * total,
+            selected = 0;
+          for (let i = 0; i < weights.length; i++) {
+            choice -= weights[i];
+            if (choice < 0) {
+              selected = i;
+              break;
+            }
+          }
+          request(keys[selected]);
+        }
+        lastKey = null;
+        renderCache(
+          "Sent 20 requests where A, B and C are more popular. Change the cache size and try again.",
+        );
+      });
+      document.getElementById("reset").addEventListener("click", () => {
+        cache = [];
+        hits = 0;
+        misses = 0;
+        totalMs = 0;
+        lastKey = null;
+        renderCache("Reset. Pick a key to begin.");
+      });
+      hitRate.addEventListener("input", updateSimulation);
+      renderCache();
+      updateSimulation();
+    </script>
+  </body>
+</html>
