@@ -49,7 +49,7 @@
         <div class="keys" id="keys" aria-label="Keys to request"></div>
         <p class="label">Cache</p>
         <div class="slots" id="slots" aria-live="polite"></div>
-        <div class="ends">
+        <div class="ends" id="ends">
           <span>most recently used</span><span>next to evict</span>
         </div>
         <div class="message" id="message" aria-live="polite">
@@ -120,10 +120,10 @@
             ><strong id="db-time">350.0ms</strong>
           </div>
           <div class="result">
-            <span>With this cache</span><strong id="cache-time">78.0s</strong>
+            <span>With this cache</span><strong id="cache-time">78.0ms</strong>
           </div>
           <div class="result">
-            <span>Time saved</span><strong id="saved-time">272.0s</strong>
+            <span>Time saved</span><strong id="saved-time">272.0ms</strong>
           </div>
           <div class="result">
             <span>Database reads avoided</span
@@ -132,15 +132,15 @@
         </div>
         <p class="label">Where requests go</p>
         <div class="bar" aria-label="Cache and database request split">
-          <div class="cache-bar" id="bar-hit">cache</div>
-          <div class="db-bar" id="bar-miss">database</div>
+          <div class="cache-bar" id="bar-hit" style="width: 80%">cache</div>
+          <div class="db-bar" id="bar-miss" style="width: 20%">database</div>
         </div>
         <p class="label">Average time compared to no cache (35ms)</p>
         <div
           class="track"
           aria-label="Average response time compared to database"
         >
-          <div id="bar-time"></div>
+          <div id="bar-time" style="width: 22.3%"></div>
         </div>
         <p class="note">
           Capacity tells us how many items can be stored at once. The hit rate
@@ -228,8 +228,19 @@
           ? `${Math.round((hits / count) * 100)}%`
           : "-";
         document.getElementById("average-time").textContent = count
-          ? `${Math.round(totalMs / count)}ms`
+          ? `${(totalMs / count).toFixed(1)}ms`
           : "-";
+        const ends = document.getElementById("ends");
+        if (ends) {
+          if (capacity === 1) {
+            ends.innerHTML = "<span>only slot (next to evict)</span>";
+            ends.style.width = "auto";
+          } else {
+            ends.innerHTML =
+              "<span>most recently used</span><span>next to evict</span>";
+            ends.style.width = `${slots.offsetWidth || capacity * 40 + (capacity - 1) * 6.4}px`;
+          }
+        }
         if (message) document.getElementById("message").textContent = message;
       }
       function updateSimulation() {
@@ -248,9 +259,12 @@
         document.getElementById("avoided-reads").textContent = Math.round(
           reads * hits,
         ).toLocaleString();
-        document.getElementById("bar-hit").style.width = `${hitRate.value}%`;
-        document.getElementById("bar-miss").style.width =
-          `${100 - hitRate.value}%`;
+        const barHit = document.getElementById("bar-hit");
+        const barMiss = document.getElementById("bar-miss");
+        barHit.style.width = `${hitRate.value}%`;
+        barMiss.style.width = `${100 - hitRate.value}%`;
+        barHit.textContent = Number(hitRate.value) < 12 ? "" : "cache";
+        barMiss.textContent = Number(hitRate.value) > 88 ? "" : "database";
         document.getElementById("response-time").textContent =
           `${average.toFixed(1)}ms`;
         document.getElementById("speedup").textContent =
@@ -270,9 +284,9 @@
         capacity = Number(cacheSize.value);
         cache = cache.slice(0, capacity);
         document.getElementById("cache-size-value").textContent =
-          `${capacity} slot${capacity === 1 ? "" : "ms"}`;
+          `${capacity} slot${capacity === 1 ? "" : "s"}`;
         renderCache(
-          `Cache resized to ${capacity} slot${capacity === 1 ? "" : "ms"}.`,
+          `Cache resized to ${capacity} slot${capacity === 1 ? "" : "s"}.`,
         );
       });
       document.getElementById("popular").addEventListener("click", () => {
@@ -291,7 +305,7 @@
         }
         lastKey = null;
         renderCache(
-          "Sent 20 requests where A, B and C are more popular. Change the cache size and try again.",
+          "Sent 20 requests where A, B and C are more popular. Click Reset, change the cache size, and try again.",
         );
       });
       document.getElementById("reset").addEventListener("click", () => {
