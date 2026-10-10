@@ -161,6 +161,12 @@ blockquote {
   margin: 5px 40px 15px;
 }
 
+.code-block {
+  background: #0f0f0f;
+  border: 1px solid #333;
+  margin: 1rem 40px 1.5rem;
+}
+
 @media (max-width: 768px) {
   .contents {
     width: 90%;
@@ -199,6 +205,10 @@ blockquote {
 
   .post-list {
     padding: 10px 20px;
+  }
+
+  .code-block {
+    margin: 1rem 20px 1.5rem;
   }
 
   .blog-heading {

@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Switching to uv for Python Development</title>
+    <link rel="stylesheet" href="../css/new_style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1 id="back">
+        <a href="/index.html" style="text-decoration: none; color: #fff"
+          >&lt;- back</a
+        >
+      </h1>
+
+      <h1>
+        <span class="hash">#</span> Switching to uv for Python Development
+      </h1>
+      <p class="date">Posted on Oct 10, 2026</p>
+
+      <p>
+        Python packaging has always felt like juggling too many tools. If you've
+        worked on a Python project for more than a few days, you've probably
+        used <code>pyenv</code> to switch Python versions, <code>venv</code> to
+        create environments, <code>pip</code> to install packages,
+        <code>pip-tools</code> or Poetry to lock them, and <code>pipx</code> to
+        run global CLI tools.
+      </p>
+
+      <p>
+        It works, but having five different tools just to set up a basic project
+        gets messy quickly.
+      </p>
+
+      <p>
+        Recently I've been using <a href="https://docs.astral.sh/uv/">uv</a>, a
+        Python package and project manager built by
+        <a href="https://astral.sh/">Astral</a> (the team behind Ruff). It's
+        written in Rust, it's fast, and most importantly, it pulls all of these
+        separate workflows into a single CLI tool.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> The Old Way vs The uv Way
+      </h1>
+
+      <p>A typical Python project setup usually looks something like this:</p>
+
+      <div class="code-block">
+        <pre><code># Create and activate an environment
+python -m venv .venv
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+
+# Install packages
+pip install requests pytest
+
+# Dump installed packages (often includes messy unpinned transitive deps)
+pip freeze > requirements.txt</code></pre>
+      </div>
+
+      <p>With uv, the project workflow is much cleaner:</p>
+
+      <div class="code-block">
+        <pre><code># Initialise a new project
+uv init my-project
+cd my-project
+
+# Add dependencies
+uv add requests
+uv add --dev pytest
+
+# Run your code
+uv run python main.py</code></pre>
+      </div>
+
+      <p>
+        The biggest quality-of-life improvement here is <code>uv run</code>. You
+        don't have to manually activate the virtualenv every time you open a
+        terminal. uv checks that your environment matches your dependencies,
+        syncs anything missing, and runs the script inside the environment
+        automatically.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Managing Python Versions Directly
+      </h1>
+
+      <p>
+        Normally, if a project needs Python 3.11 and another needs Python 3.12,
+        you have to manage that through <code>pyenv</code>, Homebrew, or system
+        installers.
+      </p>
+
+      <p>
+        uv can install and manage Python interpreters directly without any extra
+        setup:
+      </p>
+
+      <div class="code-block">
+        <pre><code># Download and install Python 3.12
+uv python install 3.12
+
+# Pin this project to 3.12 (writes a .python-version file)
+uv python pin 3.12</code></pre>
+      </div>
+
+      <p>
+        Now the required Python version is explicitly tracked in the repo rather
+        than being an assumption about whatever Python version happens to be on
+        your machine.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Lockfiles That Actually Work
+      </h1>
+
+      <p>
+        In a uv project, your direct dependencies live in
+        <code>pyproject.toml</code>:
+      </p>
+
+      <div class="code-block">
+        <pre><code>[project]
+name = "my-project"
+version = "0.1.0"
+dependencies = [
+    "requests>=2.31",
+]</code></pre>
+      </div>
+
+      <p>
+        Alongside it, uv generates a <code>uv.lock</code> file with the exact
+        resolved dependency graph across all platforms. Whenever someone else
+        clones the repo, they run:
+      </p>
+
+      <div class="code-block">
+        <pre><code>uv sync</code></pre>
+      </div>
+
+      <p>
+        And their environment is instantly identical to yours. No missing
+        sub-dependencies, no surprise version bumps breaking things in CI.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Running CLI Tools with uvx
+      </h1>
+
+      <p>
+        We often need standalone developer tools like Ruff, Black, or HTTPie. If
+        you install them into your global Python environment, you risk polluting
+        dependencies. If you use <code>pipx</code>, that's yet another tool to
+        install.
+      </p>
+
+      <p>
+        uv comes with <code>uvx</code> (an alias for <code>uv tool run</code>),
+        which runs a tool in a throwaway isolated environment:
+      </p>
+
+      <div class="code-block">
+        <pre><code># Run Ruff without installing it permanently
+uvx ruff check .
+
+# Or install it globally if you use it all the time
+uv tool install ruff</code></pre>
+      </div>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Running Standalone Scripts with Inline
+        Dependencies
+      </h1>
+
+      <p>
+        Sometimes you just want to write a quick 20-line script to scrape a page
+        or parse an API response. Setting up a full project directory and
+        virtual environment for a scratch script is overkill.
+      </p>
+
+      <p>
+        With uv, you can declare inline script metadata (PEP 723) right at the
+        top of the file:
+      </p>
+
+      <div class="code-block">
+        <pre><code># /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "requests",
+# ]
+# ///
+import requests
+
+response = requests.get("https://httpbin.org/get", timeout=10)
+print(response.status_code)</code></pre>
+      </div>
+
+      <p>Then run it directly:</p>
+
+      <div class="code-block">
+        <pre><code>uv run script.py</code></pre>
+      </div>
+
+      <p>
+        uv resolves the dependency, spins up an isolated cache environment, runs
+        the script, and handles everything behind the scenes.
+      </p>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> You Don't Have to Rewrite Existing Projects
+      </h1>
+
+      <p>
+        You don't need to migrate your existing projects all at once. uv also
+        acts as a drop-in replacement for <code>pip</code> and
+        <code>venv</code>:
+      </p>
+
+      <div class="code-block">
+        <pre><code># Create a venv
+uv venv
+
+# Install packages into the active venv
+uv pip install requests
+
+# Compile a requirements.txt
+uv pip compile requirements.in -o requirements.txt</code></pre>
+      </div>
+
+      <p>
+        And if you want to convert a project that uses a
+        <code>requirements.txt</code> file to uv:
+      </p>
+
+      <div class="code-block">
+        <pre><code>uv add -r requirements.txt</code></pre>
+      </div>
+
+      <h1 style="font-size: large">
+        <span class="hash">##</span> Final Thoughts
+      </h1>
+
+      <p>
+        The speed of uv is nice and installing packages in milliseconds instead
+        of watching pip download wheels is great. But the real win is
+        simplicity. Having Python versioning, virtual environments, dependency
+        locking, and script execution in one tool eliminates a lot of everyday
+        friction.
+      </p>
+
+      <p>
+        If your current Python setup works well for you, there's no urgent need
+        to rewrite everything. But for new projects or one-off scripts, uv has
+        become my default choice.
+      </p>
+
+      <p>
+        You can check out the official docs at
+        <a href="https://docs.astral.sh/uv/">docs.astral.sh/uv</a>.
+      </p>
+    </main>
+  </body>
+</html>
